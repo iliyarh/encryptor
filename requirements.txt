@@ -1,0 +1,2 @@
+cryptography==3.4.8
+pyfiglet==0.8.post1
