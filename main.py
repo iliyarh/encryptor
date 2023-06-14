@@ -2,6 +2,7 @@ import pyfiglet
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
+import colorama
 import base64
 import os
 import json
@@ -54,12 +55,15 @@ def load_config():
         iv = config.get("iv", "").encode("utf-8")
     return key, iv
 
+# Initialize colorama
+colorama.init()
+
 print_big_text("iliya RH Encryptor")
 # Main loop
 while True:
-    print("\n1. Encrypt")
-    print("2. Decrypt")
-    print("0. Exit")
+    print(colorama.Fore.GREEN, "1. Encrypt", colorama.Style.RESET_ALL)
+    print(colorama.Fore.RED, "2. Decrypt", colorama.Style.RESET_ALL)
+    print(colorama.Fore.BLUE, "0. Exit", colorama.Style.RESET_ALL)
     choice = input("Enter your choice: ")
 
     if choice == "1":  # Encrypt
