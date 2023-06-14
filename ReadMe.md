@@ -32,8 +32,6 @@ git clone https://github.com/iliyarh/encryptor
 pip install -r requirements.txt
 ```
 
-<p>3. The encryption key and initialization vector (IV) are stored in the config.json file. Modify these values in the file as needed.</p>
-
 <h2>🛡️ License:</h2>
 
 This project is licensed under the This project is licensed under the MIT License.
