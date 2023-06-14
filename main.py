@@ -54,16 +54,15 @@ def load_config():
         iv = config.get("iv", "").encode("utf-8")
     return key, iv
 
+print_big_text("iliya RH Encryptor")
 # Main loop
 while True:
-    print_big_text("iliya RH Encryptor")
     print("\n1. Encrypt")
     print("2. Decrypt")
     print("0. Exit")
     choice = input("Enter your choice: ")
 
     if choice == "1":  # Encrypt
-        print_big_text("iliya RH Encryptor")
         plaintext = input("Enter the text to encrypt: ")
         key, iv = load_config()
 
@@ -72,7 +71,6 @@ while True:
         write_base64_file(base64_text)
 
     elif choice == "2":  # Decrypt
-        print_big_text("iliya RH Encryptor")
         ciphertext = input("Enter the ciphertext to decrypt: ")
         key, iv = load_config()
 
