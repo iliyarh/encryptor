@@ -1,6 +1,4 @@
 {
-  "//" : "The Key Should be 32 Characters Long, and the IV should be 16 Characters Long.",
-
   "key": "your_key_here",
   "iv": "your_iv_here"
   }
