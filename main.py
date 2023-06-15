@@ -145,7 +145,7 @@ while True:
 
         while True:
             file_name = input("Enter the file name: ")
-            file_path = os.path.join("Data/encrypted", f"encrypted_text_{file_name}.txt")
+            file_path = os.path.join("Data/encrypted", f"encrypted_text_{file_name}.iliyarh")
             if os.path.exists(file_path):
                 print("File name already exists. Please choose a different name.")
             else:
@@ -153,7 +153,7 @@ while True:
 
         ciphertext = encrypt(plaintext.encode('utf-8'), key, iv)
         base64_text = base64.b64encode(ciphertext).decode('utf-8')
-        write_base64_file(base64_text, f"encrypted_text_{file_name}.txt")
+        write_base64_file(base64_text, f"encrypted_text_{file_name}.iliyarh")
 
     elif choice == "2":  # Decrypt
         file_path = select_file()
