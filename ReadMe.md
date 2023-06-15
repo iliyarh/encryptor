@@ -6,7 +6,7 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://i.ibb.co/tHRXdVD/Capture.png" alt="project-screenshot" width="400" height="400/">
+<img src="https://tinypng.com/backend/opt/output/vqrmr4ydykthe0gpmx4pspz5h905a5h7/Annotation%202023-06-15%20110525.png" alt="project-screenshot" width="400" height="400/">
 
   
   
