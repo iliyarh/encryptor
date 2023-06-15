@@ -1,10 +1,12 @@
-import pyfiglet
+from art import *
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 import colorama
 import base64
 import os
+import shutil
+import time
 import json
 import secrets
 from datetime import datetime
@@ -17,7 +19,7 @@ def generate_key():
 def generate_iv():
     return secrets.token_bytes(16)
 
-# Function to encrypt plaintext using AES-256 CBC
+# Function to encrypt plaintext
 def encrypt(plaintext, key, iv):
     padder = padding.PKCS7(128).padder()
     padded_data = padder.update(plaintext) + padder.finalize()
@@ -28,7 +30,7 @@ def encrypt(plaintext, key, iv):
     ciphertext = encryptor.update(padded_data) + encryptor.finalize()
     return ciphertext
 
-# Function to decrypt ciphertext using AES-256 CBC
+# Function to decrypt ciphertext
 def decrypt(ciphertext, key, iv):
     backend = default_backend()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
@@ -41,26 +43,25 @@ def decrypt(ciphertext, key, iv):
 
 # Function to print big text
 def print_big_text(text, color=colorama.Fore.WHITE):
-    ascii_art = pyfiglet.figlet_format(text)
-    colored_ascii_art = color + ascii_art + colorama.Style.RESET_ALL
-    print(colored_ascii_art)
+    ascii_art = text2art(text, font='standard')
+    print(ascii_art)
 
-# Function to write encrypted text in Base64 format to a file
-def write_base64_file(base64_text):
-    directory = "encrypted"
+# Function to write encrypted text to a file
+def write_base64_file(base64_text, file_name):
+    directory = "Data/encrypted"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"encrypted_text_base64_{timestamp}.txt"
-    with open(os.path.join(directory, filename), "w") as file:
+    file_path = os.path.join(directory, file_name)
+    with open(file_path, "w") as file:
         file.write(base64_text)
-    print("Encrypted text (Base64) saved to:", filename)
+    print("Encrypted text (Base64) saved to:", file_name)
 
 # Load key and IV from config.json
 def load_config():
-    if os.path.exists("config.json"):
-        with open("config.json") as file:
+    config_file = "Data/config.json"
+    if os.path.exists(config_file):
+        with open(config_file) as file:
             try:
                 config = json.load(file)
                 key = bytes.fromhex(config.get("key", ""))
@@ -71,27 +72,69 @@ def load_config():
                     print("Invalid key or IV length in config.json.")
             except json.JSONDecodeError:
                 print("Invalid JSON data in config.json.")
-    
+
     # Generate random key and IV if config.json doesn't exist or contains invalid data
     key = generate_key()
     iv = generate_iv()
-    with open("config.json", "w") as file:
+    if not os.path.exists("Data"):
+        os.makedirs("Data")
+    with open(config_file, "w") as file:
         config = {"key": key.hex(), "iv": iv.hex()}
         json.dump(config, file)
+    print("New config generated.")
     return key, iv
+
+# Function to display encrypted files
+def display_encrypted_files():
+    directory = "Data/encrypted"
+    if os.path.exists(directory):
+        files = os.listdir(directory)
+        if files:
+            print("Encrypted files:")
+            for i, file in enumerate(files, start=1):
+                print(f"{i}. {file}")
+            return
+
+    print("No encrypted files found.")
+
+# Function to select a file from the encrypted folder
+def select_file():
+    display_encrypted_files()
+    while True:
+        file_number = input("Select the file number to decrypt: ")
+        directory = "Data/encrypted"
+        files = os.listdir(directory)
+        try:
+            file_index = int(file_number) - 1
+            if file_index >= 0 and file_index < len(files):
+                file_name = files[file_index]
+                file_path = os.path.join(directory, file_name)
+                return file_path
+            else:
+                print("Invalid file number. Please try again.")
+        except ValueError:
+            print("Invalid input. Please enter a valid file number.")
+
 
 # Initialize colorama
 colorama.init()
 
 print_big_text("iliya RH Encryptor")
 
+if os.path.exists("Data"):
+    print("The program is using existing Data.\n")
+else:
+    print("The program couldn't find any existing Data. It will create a new one if you encrypt a text.\n")
+
 # Main loop
 while True:
     print(colorama.Fore.GREEN, "1. Encrypt", colorama.Style.RESET_ALL)
-    print(colorama.Fore.RED, "2. Decrypt", colorama.Style.RESET_ALL)
-    if os.path.exists("config.json"):
-        print(colorama.Fore.YELLOW, "3. Show Key and IV", colorama.Style.RESET_ALL)
-        print(colorama.Fore.MAGENTA, "4. Reset Key and IV", colorama.Style.RESET_ALL)
+    if os.path.exists("Data"):
+        print(colorama.Fore.RED, "2. Decrypt", colorama.Style.RESET_ALL)
+    if os.path.exists("Data/config.json"):
+        print(colorama.Fore.YELLOW, "3. Show Config", colorama.Style.RESET_ALL)
+        print(colorama.Fore.MAGENTA, "4. Reset Data", colorama.Style.RESET_ALL)
+    print(colorama.Fore.CYAN, "5. Clear Console", colorama.Style.RESET_ALL)
     print(colorama.Fore.BLUE, "0. Exit", colorama.Style.RESET_ALL)
 
     choice = input("Select an option: ")
@@ -100,12 +143,22 @@ while True:
         plaintext = input("Enter the plaintext to encrypt: ")
         key, iv = load_config()
 
+        while True:
+            file_name = input("Enter the file name: ")
+            file_path = os.path.join("Data/encrypted", f"encrypted_text_{file_name}.txt")
+            if os.path.exists(file_path):
+                print("File name already exists. Please choose a different name.")
+            else:
+                break
+
         ciphertext = encrypt(plaintext.encode('utf-8'), key, iv)
         base64_text = base64.b64encode(ciphertext).decode('utf-8')
-        write_base64_file(base64_text)
+        write_base64_file(base64_text, f"encrypted_text_{file_name}.txt")
 
     elif choice == "2":  # Decrypt
-        ciphertext = input("Enter the ciphertext to decrypt: ")
+        file_path = select_file()
+        with open(file_path, "r") as file:
+            ciphertext = file.read()
         key, iv = load_config()
 
         ciphertext_bytes = base64.b64decode(ciphertext)
@@ -117,22 +170,32 @@ while True:
         print("Key:", key.hex())
         print("IV:", iv.hex())
 
-    elif choice == "4" and os.path.exists("config.json"):  # Reset Key and IV
-        confirmation = input("Are you sure you want to reset the Key and IV? This will make all previous encrypted data unreadable. (yes/no): ")
+    elif choice == "4" and os.path.exists("Data/config.json"):  # Reset Key and IV
+        confirmation = input("Are you sure you want to reset the Data? This will delete all the previous encrypted data. (yes/no): ")
         if confirmation.lower() == "yes":
             key = generate_key()
             iv = generate_iv()
-            with open("config.json", "w") as file:
+            with open("Data/config.json", "w") as file:
                 config = {"key": key.hex(), "iv": iv.hex()}
                 json.dump(config, file)
-            print("Key and IV reset. Previous encrypted data is no longer readable.")
+            shutil.rmtree('Data/encrypted')
+            print("Key and IV reset and Encrypted Data Removed.")
         else:
             print("Key and IV reset cancelled.")
 
+    elif choice == "5":  # Clear Console
+        clear = lambda: os.system('cls')
+        clear()
+        print_big_text("iliya RH Encryptor")
+        if os.path.exists("Data"):
+            print("The program is using existing Data.\n")
+        else:
+            print("The program couldn't find any existing Data. It will create a new one if you encrypt a text.\n")
+
     elif choice == "0":  # Exit
+        print_big_text("Goodbye!")
+        time.sleep(2)
         break
 
     else:
         print("Invalid choice. Please try again.")
-
-print("Program ended.")
