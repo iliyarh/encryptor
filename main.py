@@ -146,7 +146,8 @@ else:
 # Main loop
 while True:
     print(colorama.Fore.GREEN, "1. Encrypt", colorama.Style.RESET_ALL)
-    files_exist = display_encrypted_files()
+    if len(os.listdir('Data/encrypted')) > 0:
+        print(colorama.Fore.RED, "2. Decrypt", colorama.Style.RESET_ALL)
     if os.path.exists("Data/config.json"):
         print(colorama.Fore.YELLOW, "3. Show Config", colorama.Style.RESET_ALL)
         print(colorama.Fore.MAGENTA, "4. Reset Data", colorama.Style.RESET_ALL)
@@ -171,7 +172,7 @@ while True:
         base64_text = base64.b64encode(ciphertext).decode('utf-8')
         write_base64_file(base64_text, f"encrypted_text_{file_name}.iliyarh")
 
-    elif choice == "2" and not files_exist:  # Decrypt
+    elif choice == "2":  # Decrypt
         file_path = select_file()
         with open(file_path, "r") as file:
             ciphertext = file.read()
