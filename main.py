@@ -10,6 +10,7 @@ import time
 import json
 import secrets
 from datetime import datetime
+import platform
 
 # Function to generate a random key
 def generate_key():
@@ -55,7 +56,7 @@ def write_base64_file(base64_text, file_name):
     file_path = os.path.join(directory, file_name)
     with open(file_path, "w") as file:
         file.write(base64_text)
-    print("Encrypted text (Base64) saved to:", file_name)
+    print("Encrypted text saved to:", file_name)
 
 # Load key and IV from config.json
 def load_config():
@@ -93,9 +94,8 @@ def display_encrypted_files():
             print("Encrypted files:")
             for i, file in enumerate(files, start=1):
                 print(f"{i}. {file}")
-            return
-
-    print("No encrypted files found.")
+            return False  # Files exist
+    return True  # No files
 
 # Function to select a file from the encrypted folder
 def select_file():
@@ -115,6 +115,12 @@ def select_file():
         except ValueError:
             print("Invalid input. Please enter a valid file number.")
 
+# Function to clear the console
+def clear_console():
+    if platform.system() == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 # Initialize colorama
 colorama.init()
@@ -129,8 +135,7 @@ else:
 # Main loop
 while True:
     print(colorama.Fore.GREEN, "1. Encrypt", colorama.Style.RESET_ALL)
-    if os.path.exists("Data"):
-        print(colorama.Fore.RED, "2. Decrypt", colorama.Style.RESET_ALL)
+    files_exist = display_encrypted_files()
     if os.path.exists("Data/config.json"):
         print(colorama.Fore.YELLOW, "3. Show Config", colorama.Style.RESET_ALL)
         print(colorama.Fore.MAGENTA, "4. Reset Data", colorama.Style.RESET_ALL)
@@ -155,7 +160,7 @@ while True:
         base64_text = base64.b64encode(ciphertext).decode('utf-8')
         write_base64_file(base64_text, f"encrypted_text_{file_name}.iliyarh")
 
-    elif choice == "2":  # Decrypt
+    elif choice == "2" and not files_exist:  # Decrypt
         file_path = select_file()
         with open(file_path, "r") as file:
             ciphertext = file.read()
@@ -178,24 +183,18 @@ while True:
             with open("Data/config.json", "w") as file:
                 config = {"key": key.hex(), "iv": iv.hex()}
                 json.dump(config, file)
-            shutil.rmtree('Data/encrypted')
-            print("Key and IV reset and Encrypted Data Removed.")
+            print("Data reset and new config generated.")
         else:
-            print("Key and IV reset cancelled.")
+            print("Data reset aborted.")
 
     elif choice == "5":  # Clear Console
-        clear = lambda: os.system('cls')
-        clear()
-        print_big_text("iliya RH Encryptor")
-        if os.path.exists("Data"):
-            print("The program is using existing Data.\n")
-        else:
-            print("The program couldn't find any existing Data. It will create a new one if you encrypt a text.\n")
+        clear_console()
 
     elif choice == "0":  # Exit
-        print_big_text("Goodbye!")
-        time.sleep(2)
         break
 
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid choice. Please try again.\n")
+
+print_big_text("Goodbye")
+time.sleep(2)
