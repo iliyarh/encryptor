@@ -31,3 +31,4 @@ git clone https://github.com/iliyarh/encryptor
 ```
 pip install -r requirements.txt
 ```
+Enjoy!
