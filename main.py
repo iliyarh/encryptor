@@ -119,8 +119,19 @@ def select_file():
 def clear_console():
     if platform.system() == "Windows":
         os.system("cls")
+        print_big_text("iliya RH Encryptor")
+        if os.path.exists("Data"):
+            print("The program is using existing Data.\n")
+        else:
+            print("The program couldn't find any existing Data. It will create a new one if you encrypt a text.\n")
+        
     else:
         os.system("clear")
+        print_big_text("iliya RH Encryptor")
+        if os.path.exists("Data"):
+            print("The program is using existing Data.\n")
+        else:
+            print("The program couldn't find any existing Data. It will create a new one if you encrypt a text.\n")
 
 # Initialize colorama
 colorama.init()
