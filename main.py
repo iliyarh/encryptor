@@ -15,7 +15,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.3'
+version = '1.4'
 
 # Function to generate a random key
 def generate_key():
