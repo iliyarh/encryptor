@@ -134,8 +134,6 @@ data = response.json()
 
 # Extract the content and decode it
 content = data["content"]
-content = content.replace("\n", "")
-content = content.encode("ascii")
 content = base64.b64decode(content).decode("utf-8")
 
 # Find the value of the version variable
@@ -153,8 +151,8 @@ def compare_files(local_file, github_file):
     if local_content == github_content:
         print("The Program is up to date.")
     else:
-        print("There is an update available: \U00002699 Version "+ update_version)
-        confirm_update = input("Are you sure you want to update the Program? (yes/no)")
+        print("\U0001F514 There is an update available!: \U00002699 Version "+ update_version)
+        confirm_update = input("Are you sure you want to update the Program? (yes/no): ")
         if confirm_update == 'yes':
             with open(local_file, "w") as file:
                 file.write(github_content)
@@ -177,9 +175,7 @@ def restart_program():
 
 # Extract the content and decode it
 content = data["content"]
-content = content.replace("\n", "")
-content = content.encode("ascii")
-content = content.decode("base64")
+content = base64.b64decode(content).decode("utf-8")
 
 # Find the value of the version variable
 version_line = next(line for line in content.splitlines() if line.startswith("version ="))
@@ -205,9 +201,9 @@ while True:
     if os.path.exists("Data/config.json"):
         print(colorama.Fore.YELLOW, "3. \U0001F4DD Show Config", colorama.Style.RESET_ALL)
         print(colorama.Fore.MAGENTA, "4. \U0001F4BE Reset Data", colorama.Style.RESET_ALL)
-    print(colorama.Fore.CYAN, "5. \U0001F6A8 Clear Console", colorama.Style.RESET_ALL)
-    print(colorama.Fore.WHITE, "6. Update Program", colorama.Style.RESET_ALL)
-    print(colorama.Fore.BLUE, "0. Exit", colorama.Style.RESET_ALL)
+    print(colorama.Fore.CYAN, "5. \U0001F5D1  Clear Console", colorama.Style.RESET_ALL)
+    print(colorama.Fore.WHITE, "6. \U0001F504 Update Program", colorama.Style.RESET_ALL)
+    print(colorama.Fore.BLUE, "0. \U0001F6AA Exit", colorama.Style.RESET_ALL)
 
     choice = input("Select an option: ")
 
@@ -279,4 +275,4 @@ while True:
         print("Invalid choice. Please try again.\n")
 
 print_big_text("Goodbye")
-time.sleep(1)
+time.sleep(2)
