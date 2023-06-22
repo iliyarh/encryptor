@@ -15,7 +15,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.2'
+version = '1.3'
 
 # Function to generate a random key
 def generate_key():
@@ -156,7 +156,8 @@ def compare_files(local_file, github_file):
         if confirm_update == 'yes':
             with open(local_file, "w") as file:
                 file.write(github_content)
-            print("Local file has been updated.")
+            print(colorama.Fore.GREEN, "The Program has been updated!", colorama.Style.RESET_ALL)
+            time.sleep(2)
         else:
             print('Update has been cancelled.')
 
