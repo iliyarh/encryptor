@@ -15,7 +15,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.4'
+version = '1.3'
 
 # Function to generate a random key
 def generate_key():
@@ -148,10 +148,11 @@ def compare_files(local_file, github_file):
     response = requests.get(github_file)
     github_content = response.text
 
-    if local_content == github_content:
+    if version == update_version:
         print("The Program is up to date.")
     else:
         print("\U0001F514 There is an update available!: \U00002699 Version "+ update_version)
+        print("More Information: https://github.com/iliyarh/encryptor/commit/main")
         confirm_update = input("Are you sure you want to update the Program? (yes/no): ")
         if confirm_update == 'yes':
             with open(local_file, "w") as file:
@@ -180,7 +181,7 @@ content = base64.b64decode(content).decode("utf-8")
 
 # Find the value of the version variable
 version_line = next(line for line in content.splitlines() if line.startswith("version ="))
-version = version_line.split("=")[1].strip().strip("'").strip('"')
+update_version = version_line.split("=")[1].strip().strip("'").strip('"')
 
 # Initialize colorama
 colorama.init()
