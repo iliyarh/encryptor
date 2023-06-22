@@ -157,7 +157,7 @@ def compare_files(local_file, github_file):
         if confirm_update == 'yes':
             with open(local_file, "w") as file:
                 file.write(github_content)
-            print(colorama.Fore.GREEN, "1. \U0001F510 Encrypt", colorama.Style.RESET_ALL)
+            print(colorama.Fore.GREEN, "The Program has been updated.", colorama.Style.RESET_ALL)
             time.sleep(2)
         else:
             print('Update has been cancelled.')
