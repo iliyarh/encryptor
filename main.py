@@ -1,3 +1,4 @@
+from urllib.parse import parse_qsl
 from art import *
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
@@ -15,7 +16,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.4'
+version = '1.3'
 
 # Function to generate a random key
 def generate_key():
@@ -127,40 +128,71 @@ def clear_console():
     else:
         os.system("clear")
 
-# Get The Update Version
-github_repo = "https://api.github.com/repos/iliyarh/encryptor/contents/main.py"
-response = requests.get(github_repo)
-data = response.json()
+try:
+    # Get The Update Version
+    github_repo = "https://api.github.com/repos/iliyarh/encryptor/contents/main.py"
+    response = requests.get(github_repo)
+    response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
 
-# Extract the content and decode it
-content = data["content"]
-content = base64.b64decode(content).decode("utf-8")
+    data = response.json()
 
-# Find the value of the version variable
-version_line = next(line for line in content.splitlines() if line.startswith("version ="))
-update_version = version_line.split("=")[1].strip().strip("'").strip('"')
+    # Extract the content and decode it
+    content = data.get("content")
+    if content:
+        content = base64.b64decode(content).decode("utf-8")
+
+        # Find the value of the version variable
+        version_line = next((line for line in content.splitlines() if line.startswith("version =")), None)
+        if version_line:
+            update_version = version_line.split("=")[1].strip().strip("'").strip('"')
+            print("Update version:", update_version)
+        else:
+            print("Unable to find the version variable in the file.")
+    else:
+        print("Unable to retrieve file content from GitHub.")
+except requests.exceptions.RequestException as e:
+    print("An error occurred while making a request to the GitHub API:", str(e))
 
 
 def compare_files(local_file, github_file):
-    with open(local_file, "r") as file:
-        local_content = file.read()
+    try:
+        with open(local_file, "r") as file:
+            local_content = file.read()
 
-    response = requests.get(github_file)
-    github_content = response.text
+        response = requests.get(github_file)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
 
-    if version == update_version:
-        print("The Program is up to date.")
-    else:
-        print("\U0001F514 There is an update available!: \U00002699 Version "+ update_version)
-        print("More Information: https://github.com/iliyarh/encryptor/commit/main")
-        confirm_update = input("Are you sure you want to update the Program? (yes/no): ")
-        if confirm_update == 'yes':
-            with open(local_file, "w") as file:
-                file.write(github_content)
-            print(colorama.Fore.GREEN, "The Program has been updated.", colorama.Style.RESET_ALL)
-            time.sleep(2)
+        github_content = response.text
+
+        if version == update_version:
+            print("The Program is up to date.")
+            time.sleep(3)
         else:
-            print('Update has been cancelled.')
+            print("\U0001F514 There is an update available!: \U00002699 Version "+ update_version)
+            print("More Information: https://github.com/iliyarh/encryptor/commit/main")
+            confirm_update = input("Are you sure you want to update the Program? (yes/no): ")
+
+            if confirm_update == 'yes':
+                with open(local_file, "w") as file:
+                    file.write(github_content)
+                print(colorama.Fore.GREEN, "The Program has been updated.", colorama.Style.RESET_ALL)
+                time.sleep(3)
+            else:
+                print('Update has been canceled.')
+                time.sleep(3)
+
+    except requests.exceptions.RequestException as e:
+        print("An error occurred while making a request:", str(e))
+        time.sleep(3)
+    except FileNotFoundError as e:
+        print("File not found error:", str(e))
+        time.sleep(3)
+    except IOError as e:
+        print("An I/O error occurred:", str(e))
+        time.sleep(3)
+    except Exception as e:
+        print("An error occurred:", str(e))
+        time.sleep(3)
 
 # Function to update local Python file from GitHub
 def update_python_file():
@@ -174,14 +206,16 @@ def restart_program():
     python = sys.executable
     os.execl(python, python, *sys.argv)
 
+try:
+    # Extract the content and decode it
+    content = data["content"]
+    content = base64.b64decode(content).decode("utf-8")
 
-# Extract the content and decode it
-content = data["content"]
-content = base64.b64decode(content).decode("utf-8")
-
-# Find the value of the version variable
-version_line = next(line for line in content.splitlines() if line.startswith("version ="))
-update_version = version_line.split("=")[1].strip().strip("'").strip('"')
+    # Find the value of the version variable
+    version_line = next(line for line in content.splitlines() if line.startswith("version ="))
+    update_version = version_line.split("=")[1].strip().strip("'").strip('"')
+except Exception as e:
+    print("An error occurred:", str(e))
 
 # Initialize colorama
 colorama.init()
