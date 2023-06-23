@@ -1,4 +1,3 @@
-from urllib.parse import parse_qsl
 from art import *
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
@@ -16,7 +15,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.3'
+version = '1.3.2'
 
 # Function to generate a random key
 def generate_key():
@@ -232,8 +231,9 @@ else:
 # Main loop
 while True:
     print(colorama.Fore.GREEN, "1. \U0001F510 Encrypt", colorama.Style.RESET_ALL)
-    if len(os.listdir('Data/encrypted')) > 0:
-        print(colorama.Fore.RED, "2. \U0001F513 Decrypt", colorama.Style.RESET_ALL)
+    if os.path.exists("Data/encrypted"):
+        if len(os.listdir('Data/encrypted')) > 0:
+            print(colorama.Fore.RED, "2. \U0001F513 Decrypt", colorama.Style.RESET_ALL)
     if os.path.exists("Data/config.json"):
         print(colorama.Fore.YELLOW, "3. \U0001F4DD Show Config", colorama.Style.RESET_ALL)
         print(colorama.Fore.MAGENTA, "4. \U0001F4BE Reset Data", colorama.Style.RESET_ALL)
