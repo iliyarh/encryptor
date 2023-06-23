@@ -15,7 +15,7 @@ from datetime import datetime
 import platform
 import requests
 
-version = '1.3.2'
+version = '1.3.3'
 
 # Function to generate a random key
 def generate_key():
@@ -239,6 +239,7 @@ while True:
         print(colorama.Fore.MAGENTA, "4. \U0001F4BE Reset Data", colorama.Style.RESET_ALL)
     print(colorama.Fore.CYAN, "5. \U0001F5D1  Clear Console", colorama.Style.RESET_ALL)
     print(colorama.Fore.WHITE, "6. \U0001F504 Update Program", colorama.Style.RESET_ALL)
+    print(colorama.Fore.WHITE, "7. \U0001F4B0 Donate", colorama.Style.RESET_ALL)
     print(colorama.Fore.BLUE, "0. \U0001F6AA Exit", colorama.Style.RESET_ALL)
 
     choice = input("Select an option: ")
@@ -303,6 +304,11 @@ while True:
     elif choice == "6":
         update_python_file()
         restart_program()
+
+    elif choice == "7":
+        print(colorama.Fore.YELLOW, "BTC: bc1q35km7kdy53ql0q6yzqdcjg5a4pp8pwauqxqhrs", colorama.Style.RESET_ALL)
+        print(colorama.Fore.WHITE, "ETH: 0x2eDA16564a9E6B1FC156DdA46554F2EDEC6a424D", colorama.Style.RESET_ALL)
+        print(colorama.Fore.BLUE, "LTC: ltc1q0549yvuyax46p7e7g6v9hefmgw6lsuavqtxnnc", colorama.Style.RESET_ALL)
 
     elif choice == "0":  # Exit
         break
